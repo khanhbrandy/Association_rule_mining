@@ -25,18 +25,22 @@ class Preprocessor:
         "PROTOCOL=TCPIP;"
         "UID={3};"
         "PWD={4};").format(dsn_database, dsn_hostname, dsn_port, dsn_uid, dsn_pwd)
-
-        # Get data interest LV4 from DB2
+        # Get data from DB2
+        print('Start getting data from DB2...')
+        start = time.time()
         db2_conn = ibm_db.connect(dsn, "", "")
         db2_sql = '''
         --- SQL query here
         '''
         pconn = ibm_db_dbi.Connection(db2_conn)
         db2_df = pd.read_sql(db2_sql, pconn)
+        print('Done getting data from DB2. Time taken = {:.1f}(s) \n'.format(time.time()-start))
         return db2_df
 
     def data_preprocess(self, data,level):
         # Convert to sparse matrix
+        print('Start slicing data by level...')
+        start = time.time()
         userid_c = pd.Categorical(sorted(data['USER_ID'].unique()), ordered=True)
         level_c = pd.Categorical(sorted(data[level].unique()), ordered=True)
         row = data['USER_ID'].astype(userid_c).cat.codes
@@ -49,6 +53,7 @@ class Preprocessor:
                                     default_fill_value=None)
         dense_df.reset_index(inplace=True)
         dense_df.rename(columns={'index':'USER_ID'},inplace=True)
+        print('Done slicing data by level. Time taken = {:.1f}(s) \n'.format(time.time()-start))
         return dense_df
 
 

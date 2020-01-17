@@ -19,19 +19,27 @@ class Miner():
         data = preprocess.data_preprocess(raw_data,level)
         return data
     def get_itemset(self, data):
+        print('Start generating itemsets...')
+        start = time.time()
         list_itemset=[]
         for i in range(data.shape[0]):
             itemset=data.iloc[i].dropna().index.tolist()[1:]
             list_itemset.append(itemset)
             list_itemset = np.array(list_itemset)
+        print('Done generating itemsets. Time taken = {:.1f}(s) \n'.format(time.time()-start))
         return list_itemset
 
     def assoc_rules(self, list_itemset, min_support=0.03, min_confidence=0.10, min_lift=2, min_length=2):
+        print('Start mining frequent itemsets...')
+        start = time.time()
         association_rules = apriori(list_itemset, min_support, min_confidence, min_lift, min_length)
         association_results = np.array(association_rules)
+        print('Done mining frequent itemsets. Time taken = {:.1f}(s) \n'.format(time.time()-start))
         return association_results
 
     def item_suggest(self, association_results, mapname, name=True):
+        print('Start generating frequent itemsets...')
+        start = time.time()
         results = []
         for item in association_results:
             pair = item[0] 
@@ -53,6 +61,7 @@ class Miner():
             item_suggestion=item_suggestion[['Interest_ID 1','Interest_name 1','Interest_ID 2','Interest_name 2','Support','Confidence','Lift']]
         else:
             item_suggestion = item_suggestion
+        print('Done generating frequent itemsets. Time taken = {:.1f}(s) \n'.format(time.time()-start))
         return item_suggestion
 
 if __name__=='__main__':
@@ -64,8 +73,9 @@ if __name__=='__main__':
     dsn_uid = "XXX"        
     dsn_pwd = "XXX"
     level = 'XXX'
+    mapname = 'XXX'
     miner = Miner()
     data = miner.get_data(dsn_database, dsn_hostname, dsn_port, dsn_protocol, dsn_uid, dsn_pwd, level)
     list_itemset = miner.get_itemset(data)
     association_results = miner.assoc_rules(list_itemset, min_support=0.03, min_confidence=0.10, min_lift=2, min_length=2)
-    item_suggestion = miner.item_suggest(association_results)
+    item_suggestion = miner.item_suggest(association_results, mapname, name=True)
