@@ -1,2 +1,2 @@
-# Frequent_keyword_basket_mining
-An example of Implementing frequent itemset algorithms
+# Keyword_basket_recommendation
+An example of Implementing frequent itemset algorithm in keyword suggestion
