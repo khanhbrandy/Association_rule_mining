@@ -1,2 +1,2 @@
-# Frequent_itemset_mining_f9
+# Frequent_keyword_basket_mining
 An example of Implementing frequent itemset algorithms
